@@ -1,7 +1,7 @@
 ---
 title: 'Activity: Popular Names'
-author: "YOUR NAME HERE"
-date: "DUE DATE"
+author: "Allison Rachor"
+date: "6/23/23"
 output:
   html_document:
     df_print: paged
@@ -53,8 +53,16 @@ For steps 5-7, pick any FIVE names you wish. I choose Arnaldo, Ahmid, Nicho, Jen
 
 My answer here.... 
 
+The variables include the name, the sex it describes, a year, and the amount of times that name was counted in that year. A case is a name.
+
 ```{r}
 ## Look at the data a few different ways (see Ch 9 for more).
+head(BabyNames)
+summarize(BabyNames, cases = n())
+BabyNames %>%
+  summarize(males = sum(sex == "M"),
+            females = sum(sex == "F"))
+
 
 
 ```
@@ -70,10 +78,13 @@ My answer here....
 
 My answer here.... 
 
+The variable sex does not appear in the graph.
+
 ##### What variable(s) in the graph are similar to corresponding variables in the raw data table, but might have been transformed in some way?
 
 My answer here.... 
 
+The variable total corresponds to count in the raw data table.
 
 ### Step 4
 
@@ -81,11 +92,13 @@ My answer here....
 
 My answer here.... 
 
+Names that are not included in the made vector of 5 names are filtered out.
 
 ##### Have cases been grouped and summarized within groups in any way?
 
 My answer here.... 
 
+The names themselves have been grouped and summarized within the variable year so that the graph easily shows the count of a name over the years.
 
 ##### Have any new variables been introduced?  If so, what the relationship between the new variables and existing variables?
 
@@ -97,6 +110,7 @@ My answer here....
 
 Using the BabyNames data set, filter the data to display just the 5 names that you picked.  Then group the cases by year and name, and count how many total births per year were recorded for each of the names (regardless of sex).  
 
+A new vector of names should be made. A new data table should be created by using BabyNames and filtering it to include only names that are within the specific vector and the original BabyNames data set. The new data set should be grouped by year and names where the amount of times the names have been used in each year is totaled.
 
 ### Step 6
 
@@ -106,11 +120,18 @@ Using the BabyNames data set, filter the data to display just the 5 names that y
 
 ```{r}
 ## Create my glyph ready data set here
+names <- c("Nathaniel", "Nora", "Casey", "Rita", "Thomas")
 
+GlyphReadyForm <- BabyNames %>%
+  filter(name %in% names) %>%
+  group_by(name, year) %>%
+  summarize(total = sum(count, na.rm=TRUE))
 
 # inspect the result
 
-
+GlyphReadyForm
+head(GlyphReadyForm)
+tail(GlyphReadyForm)
 ```
 
 
@@ -132,7 +153,12 @@ If you prepared your `GlyphReadyForm` data set correctly, you should just be abl
 
 ```{r}
 #My code here 
-
+GlyphReadyForm %>%
+  ggplot(aes(x = year, y = total, group = name)) + 
+  geom_line(size = 1, alpha = 0.5, aes(color = name)) + 
+  ylab("Popularity") + 
+  xlab("Year") +
+  ggtitle("Popularity of Names Over Time")
 
 ```
 
@@ -142,7 +168,7 @@ If you prepared your `GlyphReadyForm` data set correctly, you should just be abl
 
 We can create a scatter plot for our graph. It's close to what we want, but the line plot that we really want as it is easier to understand.
 
-```
+```{r}
 ggplot( data = GlyphReadyForm, aes(x = year, y = total) ) +
   geom_point()+
   aes(colour = name) 
@@ -150,7 +176,7 @@ ggplot( data = GlyphReadyForm, aes(x = year, y = total) ) +
 
 If I use the recommended `ggplot()` command provided by the textbook I get something the following.  If you look closely at the two commands, you'll see a number of similarities in the syntax.  It's always a good idea to study code examples that work in order to see what you can use now or in the future.  For example, you might learn from the command in the text how to apply custom labels to your axes!
 
-```
+```{r}
 GlyphReadyForm %>%
   ggplot(aes(x = year, y = total, group = name)) + 
   geom_line(size = 1, alpha = 0.5, aes(color = name)) + 
